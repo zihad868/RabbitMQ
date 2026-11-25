@@ -2,7 +2,7 @@ const  ampq = require('amqplib');
  
 const sendMessage = async () => {
     try{
-        const connection = await ampq.connect('apmq://localhost');
+        const connection = await ampq.connect('amqp://localhost');
         const channel =  await connection.createChannel();
         const exchange = "email-exchange";
         const routingKey = "send-email";
@@ -15,7 +15,7 @@ const sendMessage = async () => {
         }
 
         await channel.assertExchange(exchange, 'direct', {durable: false});
-        await channel.assertQueue("email-queue", {durable: false});
+        await channel.assertQueue("email-queue", {durable: true});
 
         await channel.bindQueue('email-queue', exchange, routingKey);
 
@@ -30,3 +30,5 @@ const sendMessage = async () => {
         console.error('Error sending message:', err);
     }
 }
+
+sendMessage();
